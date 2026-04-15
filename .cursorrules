@@ -1,0 +1,29 @@
+# HCDE 530 — project context for Cursor
+
+Human-readable background (audience, submission, macOS notes, assets layout) lives in **`PROJECT_CONTEXT.md`**. If that file and this file disagree with the **course handout**, follow the handout.
+
+## What this repo is
+Course work for **HCDE 530**. Assignments and demos are organized by week (e.g. `week 2/`). Prefer small, readable scripts over large frameworks unless the assignment calls for otherwise.
+
+## Languages and layout
+- **Python**: Primary language for data handling, CSV I/O, and small build utilities.
+- **HTML / CSS / JS**: Used for static dashboards and demos; keep assets colocated with the week folder when that is the existing pattern.
+- **Data**: CSV and similar files live beside the scripts that consume them unless a README specifies otherwise.
+
+## Python conventions (match existing code)
+- Target **Python 3** with a clear shebang on runnable scripts (`#!/usr/bin/env python3`) where appropriate.
+- Use the **standard library** first (`csv`, `json`, `os`, `re`, etc.). Do not add third-party packages unless the user or assignment explicitly requires them.
+- Resolve paths with **`os.path.dirname(__file__)`** (or `Path` + `__file__`) so scripts work regardless of the current working directory.
+- Open text files with **`encoding="utf-8"`** and CSV with **`newline=""`**.
+- Prefer a **`main()`** guarded by `if __name__ == "__main__":` for scripts that run as programs.
+- Use **type hints** on new functions when it improves clarity (optional for tiny homework snippets).
+- Keep **docstrings** for non-obvious functions; avoid redundant comments on every line.
+
+## HTML / dashboards
+- When regenerating or editing HTML used as a data vessel, preserve the existing **embedding pattern** (e.g. `<script id="embedded-data" type="application/json">`) unless the user asks to redesign it.
+- Prefer **accessible, simple** markup and readable inline or embedded styles consistent with the current file.
+
+## General agent behavior
+- Make **minimal, focused diffs**: change only what is needed for the task; do not refactor unrelated code or rename files without a clear reason.
+- **Do not commit** secrets, API keys, or large personal datasets; respect `.gitignore` (e.g. ignore local OS junk like `.DS_Store`).
+- If requirements are ambiguous for a graded deliverable, **ask briefly** before choosing a stack or file layout that diverges from the week folder pattern.
