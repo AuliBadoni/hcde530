@@ -1,4 +1,6 @@
-# Week 2 — Competency 2: Code literacy and documentation
+# Week 2 — Competencies 2 & 7
+
+**C2 — Code literacy and documentation** · **C7 — Critical evaluation and professional judgment**
 
 ---
 
@@ -66,8 +68,27 @@ Use this block to show **reading + explaining + documenting** in one place.
 ### Commit messages I used this week *(paste from `git log`)*
 
 1. Enhance word count script to include median word count calculation for week 2 demo responses
-2. Update [README.md](http://README.md) to include project context and instructions for running the code
+2. Update `README.md` to include project context and instructions for running the code
 3. *Added week2 md for reference along w cursorrules*
+
+---
+
+## Competency 7 — Critical evaluation and professional judgment
+
+**What it means:** I do not treat AI output as automatically correct. I decide **what to trust**, **what to verify**, and I can say **what I checked** and **why**—not only “the tool said so.”
+
+### Evidence (Week 2)
+
+- **A specific example of something the tool got wrong, and what I did about it**  
+When I made a commit, **Cursor suggested a commit message** that felt **generic**—it did **not** describe the **actual edits** I was committing (like a vague or random placeholder instead of the real changes). I **did not use that text as-is**. I **rewrote the message** so it matched the **relevant changes** I had made (which files, and what kind of update: scripts, README, `week2.md`, etc.).
+- **Something I would not show a client (or stakeholder) without checking**  
+I would not ship **AI-generated commit messages** (or other AI copy about “what we changed”) without comparing them to **what actually changed** in the diff. The log is part of professional communication; it has to be **accurate**.
+- **A decision to override, correct, or supplement AI output**  
+I **overrode** Cursor’s suggested message and **replaced it with my own** summary tied to the **real work** in that commit. Same principle as with code: **verify first**, then stand behind what you publish.
+
+### Strong claim (one sentence)
+
+*“Cursor generated a generic commit message that didn’t match my staged changes; I rewrote it so the message described the actual updates, because the commit log has to be trustworthy for graders and collaborators.”*
 
 ---
 
