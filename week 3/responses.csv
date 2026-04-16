@@ -1,0 +1,8 @@
+name,role,response
+Jordan Lee,ux researcher,"I usually start by reviewing whatever documentation exists, but often there is not much to go on."
+Sam Patel,product manager,"We run two-week sprints and research keeps getting squeezed into the first few days."
+,ux designer,"This row should be dropped because the name field is empty."
+Riley Chen,content strategist,"Nobody invites me into the research phase until the readout."
+Alex Kim,ux designer,"The hardest part is getting engineers to understand why discovery takes time."
+,,"Another row with no name — dropped by clean_responses.py."
+Morgan Rivera,ux researcher,"Recruiting participants is always the bottleneck for our team."
