@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
-"""Load messy survey CSV; parse experience_years as int or English words."""
+"""Load messy survey CSV; parse experience_years as int or English words.
+
+Run from anywhere:
+  python3 "week 3/week3_analysis_buggy.py"
+
+Reads: week3_survey_messy.csv (same folder as this script).
+Writes: week3_frequency_summary.csv (role / department / primary_tool counts).
+"""
 
 import csv
 import os
+from collections import Counter, defaultdict
+from typing import Literal
 
 # Units and teens (single-token numbers 0–19)
 _UNITS = (
@@ -70,6 +79,60 @@ def parse_experience_years(raw: str | None) -> int | None:
         return _EXPERIENCE_WORD_MAP.get(key)
 
 
+def count_most_common(
+    rows: list[dict[str, str | None]],
+    field_name: str,
+    *,
+    how: Literal["title", "case_insensitive"],
+) -> list[tuple[str, int]]:
+    """Count values in one column; return (label, count) sorted by count desc, then label asc.
+
+    Blank or missing cells are counted as ``(blank)``. Use ``how="title"`` for roles and
+    departments. Use ``how="case_insensitive"`` for tools so ``figma`` and ``Figma`` merge
+    without breaking multi-word names like ``VS Code`` (display is the most common spelling).
+    """
+    if how == "title":
+        counts: Counter[str] = Counter()
+        for row in rows:
+            raw = row.get(field_name)
+            if raw is None or not str(raw).strip():
+                counts["(blank)"] += 1
+            else:
+                counts[str(raw).strip().title()] += 1
+        pairs = list(counts.items())
+    else:
+        group_counts: Counter[str] = Counter()
+        variants: dict[str, Counter[str]] = defaultdict(Counter)
+        for row in rows:
+            raw = row.get(field_name)
+            if raw is None or not str(raw).strip():
+                group_counts["__blank__"] += 1
+            else:
+                s = str(raw).strip()
+                key = s.casefold()
+                group_counts[key] += 1
+                variants[key][s] += 1
+        pairs = []
+        for key, n in group_counts.items():
+            if key == "__blank__":
+                pairs.append(("(blank)", n))
+            else:
+                best = sorted(variants[key].items(), key=lambda item: (-item[1], item[0]))[0][0]
+                pairs.append((best, n))
+    return sorted(pairs, key=lambda item: (-item[1], item[0]))
+
+
+def write_frequency_csv(path: str, summaries: dict[str, list[tuple[str, int]]]) -> None:
+    """Write one CSV with columns category, value, count for each named summary list."""
+    fieldnames = ["category", "value", "count"]
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for category, rows in summaries.items():
+            for value, count in rows:
+                writer.writerow({"category": category, "value": value, "count": count})
+
+
 def main() -> None:
     filename = os.path.join(os.path.dirname(__file__), "week3_survey_messy.csv")
     rows = []
@@ -79,19 +142,31 @@ def main() -> None:
         for row in reader:
             rows.append(row)
 
-    # Count responses by role
-    role_counts: dict[str, int] = {}
-
-    for row in rows:
-        role = row["role"].strip().title()
-        if role in role_counts:
-            role_counts[role] += 1
-        else:
-            role_counts[role] = 1
+    role_summary = count_most_common(rows, "role", how="title")
+    dept_summary = count_most_common(rows, "department", how="title")
+    tool_summary = count_most_common(rows, "primary_tool", how="case_insensitive")
 
     print("Responses by role:")
-    for role, count in sorted(role_counts.items()):
+    for role, count in role_summary:
         print(f"  {role}: {count}")
+
+    print("\nResponses by department:")
+    for dept, count in dept_summary:
+        print(f"  {dept}: {count}")
+
+    print("\nResponses by primary tool:")
+    for tool, count in tool_summary:
+        print(f"  {tool}: {count}")
+
+    out_csv = os.path.join(os.path.dirname(__file__), "week3_frequency_summary.csv")
+    write_frequency_csv(
+        out_csv,
+        {
+            "role": role_summary,
+            "department": dept_summary,
+            "primary_tool": tool_summary,
+        },
+    )
 
     # Average years: only rows with parseable experience_years
     total_experience = 0

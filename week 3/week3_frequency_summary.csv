@@ -1,0 +1,18 @@
+category,value,count
+role,Ux Researcher,12
+role,Ux Designer,10
+role,Content Strategist,6
+role,Product Manager,6
+role,(blank),1
+department,Product,11
+department,Research,8
+department,Design,7
+department,Marketing,6
+department,Engineering,3
+primary_tool,Figma,13
+primary_tool,Dovetail,8
+primary_tool,Notion,6
+primary_tool,Asana,3
+primary_tool,Jira,3
+primary_tool,Sketch,1
+primary_tool,VS Code,1
