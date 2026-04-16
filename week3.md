@@ -20,7 +20,7 @@ All paths below use the folder `**week 3/`** (there is a space in the name—quo
 
 ### `week3_analysis_buggy.py` — summarize a messy survey and export counts
 
-- **Purpose**: Loads `**week3_survey_messy.csv`**, prints **how many responses** fall into each **role**, **department**, and **primary tool** (with cleaning rules so similar spellings are grouped sensibly). It also prints **average years of experience** (using safer parsing than “integer only”) and **top satisfaction scores**. It **writes** a small summary file: `**week3_frequency_summary.csv`** with columns **category**, **value**, and **count** so the breakdowns are easy to open in a spreadsheet.
+- **Purpose**: Loads `**week3_survey_messy.csv`**, prints how many responses fall into each role, department, and primary tool (with cleaning rules so similar spellings are grouped sensibly). It also prints average years of experience (using safer parsing than “integer only”) and top satisfaction scores. It writes a small summary file: `**week3_frequency_summary.csv`** with columns **category**, **value**, and **count** so the breakdowns are easy to open in a spreadsheet.
 - **Inputs**: `week 3/week3_survey_messy.csv` (must sit in the **same folder** as the script).
 - **Output**: Text printed in the Terminal, plus `**week 3/week3_frequency_summary.csv`** (regenerated each time you run the script).
 
@@ -51,6 +51,7 @@ python3 week3_analysis_buggy.py
 ### Commit messages I used this week *(paste from `git log`)*
 
 1. fixed 2 bugs in week3 analysis buggy file (avg experience and satisfaction score)
+2. added a week 3 competency claims w evidence
 
 ### How I demonstrated C2
 
