@@ -46,7 +46,7 @@ _TENS = (
     ("sixty", 60),
 )
 
-
+# Build a map of English number words to their integer values
 def _build_experience_word_map() -> dict[str, int]:
     m: dict[str, int] = {}
     for i, w in enumerate(_UNITS):
@@ -64,7 +64,7 @@ def _build_experience_word_map() -> dict[str, int]:
 
 _EXPERIENCE_WORD_MAP = _build_experience_word_map()
 
-
+# This function is used to parse the experience_years column from the survey data.
 def parse_experience_years(raw: str | None) -> int | None:
     """Parse digits or English number words to int years; None if unknown."""
     if raw is None:
@@ -78,7 +78,7 @@ def parse_experience_years(raw: str | None) -> int | None:
         key = " ".join(s.lower().replace("-", " ").split())
         return _EXPERIENCE_WORD_MAP.get(key)
 
-
+# This function is used to count the most common values in a column.
 def count_most_common(
     rows: list[dict[str, str | None]],
     field_name: str,
@@ -121,7 +121,7 @@ def count_most_common(
                 pairs.append((best, n))
     return sorted(pairs, key=lambda item: (-item[1], item[0]))
 
-
+# This function is used to write the frequency summary to a CSV file.
 def write_frequency_csv(path: str, summaries: dict[str, list[tuple[str, int]]]) -> None:
     """Write one CSV with columns category, value, count for each named summary list."""
     fieldnames = ["category", "value", "count"]
@@ -131,7 +131,6 @@ def write_frequency_csv(path: str, summaries: dict[str, list[tuple[str, int]]]) 
         for category, rows in summaries.items():
             for value, count in rows:
                 writer.writerow({"category": category, "value": value, "count": count})
-
 
 def main() -> None:
     filename = os.path.join(os.path.dirname(__file__), "week3_survey_messy.csv")
