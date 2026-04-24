@@ -39,11 +39,13 @@ python3 tmdb_movies.py
 
 The script has one knob near the top called `LOOKUP_MODE`. The default is the "most popular 2025" mode; the other two are there as toggles so the same script can answer different questions:
 
-| `LOOKUP_MODE` | What it compares |
-| --- | --- |
-| `"discover_popular_2025"` *(default)* | The top 5 most popular movies **released in 2025** (any genre). |
-| `"search"` | Three specific video-game adaptations I wanted to compare: *The Super Mario Bros. Movie*, *Sonic the Hedgehog*, and *Uncharted*. |
-| `"discover_game_2025"` | Top 5 of 2025 that TMDB tags with the **"video game"** keyword (id 282). |
+
+| `LOOKUP_MODE`                         | What it compares                                                                                                                 |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `"discover_popular_2025"` *(default)* | The top 5 most popular movies **released in 2025** (any genre).                                                                  |
+| `"search"`                            | Three specific video-game adaptations I wanted to compare: *The Super Mario Bros. Movie*, *Sonic the Hedgehog*, and *Uncharted*. |
+| `"discover_game_2025"`                | Top 5 of 2025 that TMDB tags with the **"video game"** keyword (id 282).                                                         |
+
 
 Changing one string at the top and re-running the script switches modes—no other edits needed.
 
@@ -53,17 +55,21 @@ Changing one string at the top and re-running the script switches modes—no oth
 
 ### Evidence in this repo (checklist)
 
-| Rubric item | Where to look |
-| --- | --- |
-| **Inline comments** (*why*, not only *what*) | `week 4/tmdb_movies.py` — e.g. the block that explains why the key goes in `.env`, why the script uses two endpoints (`/search/movie` then `/movie/{id}` vs. `/discover/movie`), and what each extracted field means |
-| **Docstrings** (what inputs mean, what the function does, what it returns) | `load_env_file()`, `tmdb_get_json()`, `search_tmdb_movie()`, `discover_tmdb_movies()`, `get_tmdb_movie()`, `extract_fields()` in `week 4/tmdb_movies.py` |
-| **Commit messages** (*what changed* and *why*) | in Terminal: `git log --oneline -10` |
-| **Markdown for a non-technical reader** | This file — section **"For someone who does not read code"** |
+
+| Rubric item                                                                | Where to look                                                                                                                                                                                                        |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Inline comments** (*why*, not only *what*)                               | `week 4/tmdb_movies.py` — e.g. the block that explains why the key goes in `.env`, why the script uses two endpoints (`/search/movie` then `/movie/{id}` vs. `/discover/movie`), and what each extracted field means |
+| **Docstrings** (what inputs mean, what the function does, what it returns) | `load_env_file()`, `tmdb_get_json()`, `search_tmdb_movie()`, `discover_tmdb_movies()`, `get_tmdb_movie()`, `extract_fields()` in `week 4/tmdb_movies.py`                                                             |
+| **Commit messages** (*what changed* and *why*)                             | in Terminal: `git log --oneline -10`                                                                                                                                                                                 |
+| **Markdown for a non-technical reader**                                    | This file — section **"For someone who does not read code"**                                                                                                                                                         |
+
 
 ### Commit messages I used this week *(paste from `git log` after committing)*
 
 1. Update .gitignore to exclude environment files
-2. 
+2. Added a [week4.md](http://week4.md) file 
+
+
 
 ### How I demonstrated C2
 
@@ -87,12 +93,14 @@ I demonstrated code literacy and documentation by reading TMDB's API reference, 
 
 ### Evidence in this repo (checklist)
 
-| Rubric item | Where to look |
-| --- | --- |
-| **Python script that makes an HTTP request and parses JSON** | `tmdb_get_json()` in `week 4/tmdb_movies.py` |
-| **API I found myself (not a class demo)** | TMDB — I made the account, generated the key, and read TMDB's docs to pick endpoints |
-| **API key kept out of version control** | `week 4/.env` (loaded by `load_env_file()`), plus `**/.env` in `.gitignore` |
+
+| Rubric item                                                         | Where to look                                                                                   |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Python script that makes an HTTP request and parses JSON**        | `tmdb_get_json()` in `week 4/tmdb_movies.py`                                                    |
+| **API I found myself (not a class demo)**                           | TMDB — I made the account, generated the key, and read TMDB's docs to pick endpoints            |
+| **API key kept out of version control**                             | `week 4/.env` (loaded by `load_env_file()`), plus `**/.env` in `.gitignore`                     |
 | **Short explanation of endpoints and what I did with the response** | The "How the TMDB API is used" section below, and inline comments on the three endpoint helpers |
+
 
 ### How I demonstrated C4
 
@@ -102,9 +110,9 @@ I chose **TMDB** because it is free for non-commercial use, requires a personal 
 
 The script talks to three endpoints depending on the mode:
 
-- **`GET /3/search/movie?query=<title>&year=<YYYY>`** — Given a title (and an optional release year), TMDB returns a JSON object with a `results` list of short movie summaries. I pick the best match using simple conditions (exact title + exact year first, then exact title, then TMDB's top-ranked result).
-- **`GET /3/discover/movie?primary_release_year=...&sort_by=popularity.desc&...`** — Ranked list endpoint. I hand it filters (release year, sort order, optional `with_keywords`) and it returns movies already sorted the way I asked. The `results` items already include every field I need, so I skip the per-movie detail call here.
-- **`GET /3/movie/{movie_id}`** — Full record for a single movie, used only after a search resolves to an id. Returns the same five fields (`title`, `release_date`, `vote_average`, `popularity`, `overview`) plus extras I do not use.
+- `**GET /3/search/movie?query=<title>&year=<YYYY>`** — Given a title (and an optional release year), TMDB returns a JSON object with a `results` list of short movie summaries. I pick the best match using simple conditions (exact title + exact year first, then exact title, then TMDB's top-ranked result).
+- `**GET /3/discover/movie?primary_release_year=...&sort_by=popularity.desc&...**` — Ranked list endpoint. I hand it filters (release year, sort order, optional `with_keywords`) and it returns movies already sorted the way I asked. The `results` items already include every field I need, so I skip the per-movie detail call here.
+- `**GET /3/movie/{movie_id}**` — Full record for a single movie, used only after a search resolves to an id. Returns the same five fields (`title`, `release_date`, `vote_average`, `popularity`, `overview`) plus extras I do not use.
 
 **What the response looks like** (trimmed):
 
@@ -157,3 +165,4 @@ This week the script went through **several rounds of AI suggestions that I had 
 - When an API returns multiple "ranking" metrics, **show them both** and write one honest sentence about when they disagree.
 
 ---
+
