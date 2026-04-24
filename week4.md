@@ -68,6 +68,7 @@ Changing one string at the top and re-running the script switches modes—no oth
 
 1. Update .gitignore to exclude environment files
 2. Added a [week4.md](http://week4.md) file 
+3. Updated the tmdb_movies from game based to most popular
 
 
 
