@@ -49,6 +49,38 @@ The script has one knob near the top called `LOOKUP_MODE`. The default is the "m
 
 Changing one string at the top and re-running the script switches modes—no other edits needed.
 
+### How the code is organized (functions in `tmdb_movies.py`)
+
+The script is split into small functions so each step of "ask TMDB → shape the data → save it" lives in one place. In execution order:
+
+| Area | Functions | What they do |
+| ---- | --------- | ------------- |
+| **Config** | `load_env_file` | Reads `week 4/.env` and copies `TMDB_API_KEY=...` into the program's environment so the rest of the code can pick it up via `os.environ.get("TMDB_API_KEY")` without ever hardcoding the secret. |
+| **HTTP** | `tmdb_get_json` | The single "phone call" helper: builds the GET request, parses JSON, and turns HTTP/network/timeout/JSON failures into a readable error message. Every TMDB call funnels through here. |
+| **TMDB calls** | `search_tmdb_movie`, `discover_tmdb_movies`, `get_tmdb_movie` | Build URLs for `GET /3/search/movie`, `GET /3/discover/movie`, and `GET /3/movie/{id}` respectively, then hand them to `tmdb_get_json`. |
+| **Shaping output** | `extract_fields` | Trims a big TMDB record down to the five fields the assignment compares: `title`, `release_date`, `vote_average`, `popularity`, `overview`. |
+| **Terminal output** | `print_movie`, `print_insights` | `print_movie` formats one movie as a readable block (with the overview truncated). `print_insights` looks across all collected movies and prints which is highest rated and which is most popular, plus a sentence on whether they agree. |
+| **Orchestration** | `collect_via_search`, `collect_via_discover` | The two top-level loops. `collect_via_search` runs each entry in `SEARCHES` through `/search/movie` then `/movie/{id}`. `collect_via_discover` runs one preset from `DISCOVER_PRESETS` through `/discover/movie` (no second call needed because discover already returns every field). |
+| **Save** | `write_csv` | Opens the output CSV in write mode and writes one header row plus one row per collected movie. |
+| **Entry** | `main` | Resolves the script's folder, loads `.env`, dispatches on `LOOKUP_MODE`, prints the insight block, and calls `write_csv`. Exits with a friendly message if `TMDB_API_KEY` is missing or no movies were collected. |
+
+### Where the data is saved (and what data)
+
+- **File**: always `**week 4/tmdb_movies.csv**`, sitting next to the script. The path is built as `os.path.join(script_dir, "tmdb_movies.csv")` in `main`, so it does not depend on which folder you ran `python3` from.
+- **Overwrite**: the file is rewritten from scratch on every successful run (`write_csv` opens with mode `"w"`)—there is no append/history.
+- **Columns** (from `CSV_FIELDS` in the script): `movie_id`, `title`, `release_date`, `vote_average`, `popularity`, `overview`. One row per movie in the compared set—up to `DISCOVER_LIMIT = 5` rows for the two discover modes, or up to 3 rows for `search` (one per entry in `SEARCHES` that resolved to a real TMDB record).
+- **Not saved**: raw TMDB JSON. Only the flattened CSV is written to disk; everything else is Terminal output.
+
+### What exactly is queried from the TMDB database (per mode)
+
+"Searching the API database" here means making **HTTP requests to TMDB's v3 REST API** at `https://api.themoviedb.org/3/...`. Each `LOOKUP_MODE` hits a specific endpoint with a specific set of query parameters:
+
+- **`search`** — For each entry in `SEARCHES` (e.g. `{"query": "Sonic the Hedgehog", "year": 2020}`), the script sends the **title string** and **release year** to `GET /3/search/movie?query=<title>&year=<YYYY>`, picks the best match (exact title + year first, then exact title, then TMDB's top result), and then calls `GET /3/movie/{id}` to fetch the full record—because search results are short summaries.
+- **`discover_popular_2025`** — A single ranked-list query to `GET /3/discover/movie` with the filters `primary_release_year=2025`, `sort_by=popularity.desc`, `language=en-US`, `include_adult=false`. No free-text title is involved; TMDB returns a list already sorted by its popularity score.
+- **`discover_game_2025`** — Same `/discover/movie` filters as above, plus `with_keywords=282` (TMDB's "video game" keyword id, which I verified by hitting `/search/keyword?query=video+game` myself after an earlier wrong id).
+
+The default `LOOKUP_MODE` in the script is `**"discover_popular_2025"**`, so running `python3 tmdb_movies.py` with no edits queries the popular-2025 list.
+
 ---
 
 ## Competency 2 — Code literacy and documentation
@@ -62,6 +94,7 @@ Changing one string at the top and re-running the script switches modes—no oth
 | **Docstrings** (what inputs mean, what the function does, what it returns) | `load_env_file()`, `tmdb_get_json()`, `search_tmdb_movie()`, `discover_tmdb_movies()`, `get_tmdb_movie()`, `extract_fields()` in `week 4/tmdb_movies.py`                                                             |
 | **Commit messages** (*what changed* and *why*)                             | in Terminal: `git log --oneline -10`                                                                                                                                                                                 |
 | **Markdown for a non-technical reader**                                    | This file — section **"For someone who does not read code"**                                                                                                                                                         |
+| **Function-by-function map of the script**                                 | This file — section **"How the code is organized (functions in `tmdb_movies.py`)"**, plus the **"Where the data is saved"** and **"What exactly is queried from the TMDB database"** subsections                     |
 
 
 ### Commit messages I used this week *(paste from `git log` after committing)*
